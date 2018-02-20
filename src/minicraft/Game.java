@@ -212,8 +212,6 @@ public class Game {
 		newMenu = display;
 	}
 	
-	// lol
-	
 	public static void exitMenu() {
 		if(menu == null) return; // no action required; cannot exit from no menu
 		//newMenu.onExit();
