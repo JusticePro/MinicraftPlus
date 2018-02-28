@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import minicraft.Game;
 import minicraft.InputHandler;
+import minicraft.Sound;
 import minicraft.gfx.Color;
 import minicraft.gfx.Font;
 import minicraft.gfx.Screen;
@@ -130,6 +131,7 @@ public class WorldSelectMenu extends Display {
 				.setScrollPolicies(1, true)
 				.createMenu()
 		};
+		
 	}
 	
 	public static boolean loadedWorld() {

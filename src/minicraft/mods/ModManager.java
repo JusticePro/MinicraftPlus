@@ -65,6 +65,7 @@ public class ModManager {
 		Entity[] e = null;
 		
 		Runnable r = null;
+		Runnable tick = null;
 		
 		Object instance = modClass.newInstance();
 		
@@ -94,13 +95,17 @@ public class ModManager {
 				r = (Runnable) method.invoke(instance, null);
 			}
 			
+			if (method.getName().equalsIgnoreCase("tick")) {
+				tick = (Runnable) method.invoke(instance, null);
+			}
+			
 			if (method.getName().equalsIgnoreCase("getentity")) {
 				e = (Entity[]) method.invoke(instance, null);
 			}
 			
 		}
 		
-		mod = new LoadedMod(n, v, d, i, t, e, r);
+		mod = new LoadedMod(n, v, d, i, t, e, r, tick);
 		
 		return mod;
 	}

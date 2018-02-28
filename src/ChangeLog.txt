@@ -1,3 +1,10 @@
+Minicraft+ version 2.1.2
+The Undeafening Update
+
++ Menu Music
+
++ Miniquest
+
 Minicraft+ version 2.1.1
 
 + Modding Api

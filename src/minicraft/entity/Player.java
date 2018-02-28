@@ -189,6 +189,19 @@ public class Player extends Mob {
 			if (onStairDelay <= 0) { // when the delay time has passed...
 				Game.scheduleLevelChange((onTile == Tiles.get("Stairs Up")) ? 1 : -1); // decide whether to go up or down.
 				onStairDelay = 10; // resets delay, since the level has now been changed.
+				System.out.println(Game.currentLevel);
+				
+//				if (onTile == Tiles.get("Stairs Down") && Game.currentLevel<4 /* Is underground */) {
+//					if (!Sound.dungeon.getClip().isPlaying()) {
+//						Sound.dungeon.play();
+//					}
+//				}
+//				if (onTile == Tiles.get("Stairs Up") /* Is aboveground */) {
+//					if (!Sound.dungeon.getClip().isPlaying()) {
+//						Sound.dungeon.getClip().stop();
+//					}
+//				}
+				
 				return; // SKIPS the rest of the tick() method.
 			}
 			

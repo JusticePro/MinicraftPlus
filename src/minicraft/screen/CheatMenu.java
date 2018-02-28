@@ -9,6 +9,7 @@ import minicraft.Game;
 import minicraft.InputHandler;
 import minicraft.Settings;
 import minicraft.gfx.Color;
+import minicraft.level.tile.Tiles;
 import minicraft.saveload.Save;
 import minicraft.screen.entry.Action;
 import minicraft.screen.entry.ArrayEntry;
@@ -34,7 +35,16 @@ public class CheatMenu extends Display {
 			new SelectEntry("Return to Game", () -> Game.setMenu(null)),
 			new BlankEntry(),
 			speed,
-			new SelectEntry("Survival", () -> Settings.set("mode", "survival"))
+			new SelectEntry("Survival", () -> Settings.set("mode", "survival")),
+			new SelectEntry("All Holes", () -> {
+				
+				for (int i = 0; i < 128; i++) {
+					for (int j = 0; j < 128; j++) {
+						Game.levels[Game.currentLevel].setTile(i, j, Tiles.get("Hole"));
+					}
+				}
+				
+			})
 			));
 		
 		entries.addAll(Arrays.asList(

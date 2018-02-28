@@ -9,15 +9,16 @@ public class LoadedMod implements Mod {
 	String name, version, description;
 	Item[] items; Tile[] tiles; Entity[] entites;
 	
-	Runnable onEnable;
+	Runnable onEnable, tick;
 	
-	public LoadedMod(String name, String version, String description, Item[] items, Tile[] tiles, Entity[] entites, Runnable onEnable) {
+	public LoadedMod(String name, String version, String description, Item[] items, Tile[] tiles, Entity[] entites, Runnable onEnable, Runnable tick) {
 		this.name = name;
 		this.version = version;
 		this.description = description;
 		this.items = items;
 		this.tiles = tiles;
 		this.onEnable = onEnable;
+		this.tick = tick;
 		this.entites = entites;
 	}
 	
@@ -54,6 +55,11 @@ public class LoadedMod implements Mod {
 	@Override
 	public Entity[] getEntites() {
 		return entites;
+	}
+
+	@Override
+	public Runnable tick() {
+		return tick;
 	}
 	
 }

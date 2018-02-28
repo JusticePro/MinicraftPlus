@@ -15,6 +15,7 @@ import com.sun.istack.internal.NotNull;
 
 import minicraft.Game;
 import minicraft.InputHandler;
+import minicraft.Sound;
 import minicraft.entity.RemotePlayer;
 import minicraft.gfx.Color;
 import minicraft.gfx.Font;
@@ -34,7 +35,7 @@ public class TitleMenu extends Display {
 
 	public TitleMenu() {
 		super(true, false);
-
+		
 		ArrayList<ListEntry> entries = new ArrayList<>();
 		Menu.Builder menu = new Menu.Builder(false, 2, RelPos.CENTER)
 				.setPositioning(new Point(Game.WIDTH/2, Game.HEIGHT*3/5), RelPos.CENTER);
@@ -61,19 +62,20 @@ public class TitleMenu extends Display {
 				new SelectEntry("Options", () -> Game.setMenu(new OptionsMenu())),
 				new SelectEntry("Mods", () -> openMods()),
 				new SelectEntry("Texture Packs", () -> Game.setMenu(new TexturePackMenu())),
-				displayFactory("Help",
-						new SelectEntry("Instructions", () -> Game.setMenu(new BookDisplay(Displays.instructions))),
-						new BlankEntry(),
-						new SelectEntry("Storyline Guide (for the weak)", () -> Game.setMenu(new BookDisplay(Displays.storylineGuide))),
-						new BlankEntry(),
-						new SelectEntry("About", () -> Game.setMenu(new BookDisplay(Displays.about))),
-						new BlankEntry(),
-						new SelectEntry("Credits", () -> Game.setMenu(new BookDisplay("Marcus Perrson created Minicraft\n\nDavid.b and +Dillyg10+ worked on it until 1.8\n\nChris J continued until 2.0.4\n\nJusticePro has been working on it since 2.1.0"))),
-						new BlankEntry(),
-						new SelectEntry("Texture Packs", () -> Game.setMenu(new BookDisplay("Place the image file into the texturepacks folder. Select it in game. Then you have to restart after you set texturepack.")) )
-						),
+				new SelectEntry("Miniquest", null),
 				displayFactory("More", 
-						
+						displayFactory("Help",
+								new SelectEntry("Instructions", () -> Game.setMenu(new BookDisplay(Displays.instructions))),
+								new BlankEntry(),
+								new SelectEntry("Storyline Guide (for the weak)", () -> Game.setMenu(new BookDisplay(Displays.storylineGuide))),
+								new BlankEntry(),
+								new SelectEntry("About", () -> Game.setMenu(new BookDisplay(Displays.about))),
+								new BlankEntry(),
+								new SelectEntry("Credits", () -> Game.setMenu(new BookDisplay("Marcus Perrson created Minicraft\n\nDavid.b and +Dillyg10+ worked on it until 1.8\n\nChris J continued until 2.0.4\n\nJusticePro has been working on it since 2.1.0"))),
+								new BlankEntry(),
+								new SelectEntry("Texture Packs", () -> Game.setMenu(new BookDisplay("Place the image file into the texturepacks folder. Select it in game. Then you have to restart after you set texturepack.")) )
+								),
+						new BlankEntry(),
 						new SelectEntry("Open Game Folder", () -> {
 							try {
 								Desktop.getDesktop().open(new File(Game.gameDir));
@@ -99,6 +101,10 @@ public class TitleMenu extends Display {
 		menu.setEntries(entries);
 
 		menus = new Menu[] {menu.createMenu()};
+		
+		if (!Sound.bitQuest.getClip().isPlaying()) {
+			Sound.bitQuest.play();
+		}
 	}
 
 	public void openMods() {

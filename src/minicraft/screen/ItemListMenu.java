@@ -13,7 +13,7 @@ class ItemListMenu extends Menu {
 			.setScrollPolicies(1, false);
 	}
 	
-	ItemListMenu(Builder b, ItemEntry[] entries, String title) {
+	public ItemListMenu(Builder b, ItemEntry[] entries, String title) {
 		super(b
 			.setEntries(entries)
 			.setTitle(title)
@@ -21,7 +21,7 @@ class ItemListMenu extends Menu {
 		);
 	}
 	
-	ItemListMenu(ItemEntry[] entries, String title) {
+	public ItemListMenu(ItemEntry[] entries, String title) {
 		this(getBuilder(), entries, title);
 	}
 }

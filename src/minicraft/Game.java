@@ -49,6 +49,7 @@ import minicraft.item.ToolType;
 import minicraft.level.Level;
 import minicraft.level.tile.Tile;
 import minicraft.level.tile.Tiles;
+import minicraft.mods.LoadedMod;
 import minicraft.mods.ModManager;
 import minicraft.network.MinicraftClient;
 import minicraft.network.MinicraftServer;
@@ -400,6 +401,11 @@ public class Game {
 	// VERY IMPORTANT METHOD!! Makes everything keep happening.
 	// In the end, calls menu.tick() if there's a menu, or level.tick() if no menu.
 	public static void tick() {
+		
+		for (LoadedMod mod : modManager.getModList()) {
+			mod.tick().run();
+		}
+		
 		if(newMenu != menu) {
 			if(menu != null)
 				menu.onExit();

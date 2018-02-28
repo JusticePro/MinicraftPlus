@@ -23,5 +23,6 @@ public interface Mod {
 	public Entity[] getEntites();
 	
 	public Runnable onEnable();
+	public Runnable tick();
 	
 }

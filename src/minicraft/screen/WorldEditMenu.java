@@ -14,6 +14,7 @@ import java.util.List;
 
 import minicraft.Game;
 import minicraft.InputHandler;
+import minicraft.Sound;
 import minicraft.gfx.Color;
 import minicraft.screen.Menu.Builder;
 import minicraft.screen.WorldSelectMenu.Action;

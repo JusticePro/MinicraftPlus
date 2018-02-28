@@ -155,6 +155,7 @@ public class LevelGen {
 			return result;
 			
 		} while (true);
+		
 	}
 	
   public static byte[][] createAndValidateUndergroundMap(int w, int h, int depth) {

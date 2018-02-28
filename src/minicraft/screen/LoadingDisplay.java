@@ -3,6 +3,7 @@ package minicraft.screen;
 import javax.swing.Timer;
 
 import minicraft.Game;
+import minicraft.Sound;
 import minicraft.gfx.Color;
 import minicraft.gfx.Font;
 import minicraft.gfx.Screen;
@@ -28,6 +29,7 @@ public class LoadingDisplay extends Display {
 	public void init(Display parent) {
 		super.init(parent);
 		t.start();
+		Sound.bitQuest.getClip().stop();
 	}
 	
 	@Override

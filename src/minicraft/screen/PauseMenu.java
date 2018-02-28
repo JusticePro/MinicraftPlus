@@ -8,6 +8,7 @@ import com.sun.istack.internal.NotNull;
 import minicraft.Game;
 import minicraft.InputHandler;
 import minicraft.Settings;
+import minicraft.Sound;
 import minicraft.gfx.Color;
 import minicraft.saveload.Save;
 import minicraft.screen.entry.Action;
@@ -35,7 +36,14 @@ public class PauseMenu extends Display {
 		
 		entries.addAll(Arrays.asList(
 			new SelectEntry("Save Game", saveAction()),
-			new SelectEntry("Main Menu", () -> Game.setMenu(new TitleMenu())),
+			new SelectEntry("Main Menu", () -> {
+				
+				/* Stop all Songs */
+				Sound.dungeon.getClip().stop();
+				Sound.bitQuest.getClip().stop();
+				
+				Game.setMenu(new TitleMenu());
+			}),
 			
 			new BlankEntry(),
 			

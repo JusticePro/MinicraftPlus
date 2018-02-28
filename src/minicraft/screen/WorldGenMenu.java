@@ -8,6 +8,7 @@ import java.util.Random;
 
 import minicraft.Game;
 import minicraft.Settings;
+import minicraft.Sound;
 import minicraft.gfx.Color;
 import minicraft.gfx.Font;
 import minicraft.gfx.Screen;
