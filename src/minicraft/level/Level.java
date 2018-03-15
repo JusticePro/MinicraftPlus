@@ -10,6 +10,7 @@ import minicraft.Game;
 import minicraft.Settings;
 import minicraft.entity.*;
 import minicraft.entity.particle.Particle;
+import minicraft.exception.ErrorMenu;
 import minicraft.gfx.Point;
 import minicraft.gfx.Screen;
 import minicraft.item.Item;
@@ -21,15 +22,15 @@ import minicraft.level.tile.TorchTile;
 
 public class Level {
 	private Random random = new Random();
-	
+
 	private static final int MOB_SPAWN_FACTOR = 100; // the chance of a mob actually trying to spawn when trySpawn is called equals: mobCount / maxMobCount * MOB_SPAWN_FACTOR. so, it basically equals the chance, 1/number, of a mob spawning when the mob cap is reached. I hope that makes sense...
-	
+
 	public int w, h; // width and height of the level
-	
+
 	public byte[] tiles; // an array of all the tiles in the world.
 	public byte[] data; // an array of the data of the tiles in the world. // ?
 	//private List<Entity>[] entitiesInTiles; // An array of lists of entities in the world, by tile
-	
+
 	public int depth; // depth level of the level
 	public int monsterDensity = 8; // affects the number of monsters that are on the level, bigger the number the less monsters spawn.
 	public int maxMobCount;
@@ -50,17 +51,17 @@ public class Level {
 			return e.y;
 		}
 	});
-	
+
 	/// This is a solely debug method I made, to make printing repetetive stuff easier.
-		// should be changed to accept prepend and entity, or a tile (as an Object). It will get the coordinates and class name from the object, and will divide coords by 16 if passed an entity.
+	// should be changed to accept prepend and entity, or a tile (as an Object). It will get the coordinates and class name from the object, and will divide coords by 16 if passed an entity.
 	public void printLevelLoc(String prefix, int x, int y) { printLevelLoc(prefix, x, y, ""); }
 	public void printLevelLoc(String prefix, int x, int y, String suffix) {
 		String[] levelNames = {"Sky", "Surface", "Iron", "Gold", "Lava", "Dungeon"};
 		String levelName = levelNames[-1*depth+1];
-		
+
 		System.out.println(prefix + " on " + levelName + " level ("+x+","+y+")" + suffix);
 	}
-	
+
 	public void printTileLocs(Tile t) {
 		for(int x = 0; x < w; x++)
 			for(int y = 0; y < h; y++)
@@ -77,16 +78,16 @@ public class Level {
 				numfound++;
 			}
 		}
-		
+
 		System.out.println("found " + numfound + " entities in level of depth " + depth);
 	}
-	
+
 	public void updateMobCap() {
 		maxMobCount = 150 + 150 * Settings.getIdx("diff");
 		if(depth == 1) maxMobCount /= 2;
 		if(depth == 0 || depth == -4) maxMobCount = maxMobCount * 2 / 3;
 	}
-	
+
 	@SuppressWarnings("unchecked") // @SuppressWarnings ignores the warnings (yellow underline) in this method.
 	/** Level which the world is contained in */
 	public Level(int w, int h, int level, Level parentLevel) {this(w, h, level, parentLevel, true); }
@@ -96,35 +97,35 @@ public class Level {
 		this.h = h;
 		byte[][] maps; // multidimensional array (an array within a array), used for the map
 		int saveTile;
-		
+
 		/*entitiesInTiles = new ArrayList[w * h]; // This is actually an array of arrayLists (of entities), with one arraylist per tile.
 		for (int i = 0; i < w * h; i++) {
 			entitiesInTiles[i] = new ArrayList<Entity>(); // Adds a entity list in that tile.
 		}*/
-		
+
 		if(level != -4 && level != 0)
 			monsterDensity = 4;
-	
+
 		updateMobCap();
-		
+
 		if(!makeWorld) {
 			int arrsize = w * h;
 			tiles = new byte[arrsize];
 			data = new byte[arrsize];
 			return;
 		}
-		
+
 		if(Game.debug) System.out.println("Making level "+level+"...");
-		
+
 		maps = LevelGen.createAndValidateMap(w, h, level);
 		if(maps == null) {
 			System.err.println("Level Gen ERROR: returned maps array is null");
 			return;
 		}
-		
+
 		tiles = maps[0]; // assigns the tiles in the map
 		data = maps[1]; // assigns the data of the tiles
-		
+
 		if (parentLevel != null) { // If the level above this one is not null (aka, if this isn't the sky level)
 			for (int y = 0; y < h; y++) { // loop through height
 				for (int x = 0; x < w; x++) { // loop through width
@@ -148,7 +149,7 @@ public class Level {
 			}
 		}
 
-		
+
 		/// if the level is the dungeon, and we're not just loading the world...
 		if (level == -4) {
 			for (int i = 0; i < 10 * (w / 128); i++) {
@@ -202,32 +203,32 @@ public class Level {
 				} else {
 					m = new Zombie(-level);
 				}
-				
+
 				Spawner sp = new Spawner(m);
 				int x3 = random.nextInt(16 * w) / 16;
 				int y3 = random.nextInt(16 * h) / 16;
 				if (getTile(x3, y3) == Tiles.get("dirt")) {
 					boolean xaxis2 = random.nextBoolean();
-					
+
 					if (xaxis2) {
 						for (int s2 = x3; s2 < w - s2; s2++) {
 							if (getTile(s2, y3) == Tiles.get("rock")) {
-							sp.x = s2 * 16 - 24;
-							sp.y = y3 * 16 - 24;
+								sp.x = s2 * 16 - 24;
+								sp.y = y3 * 16 - 24;
 							}
 						}
 					} else {
 						for (int s2 = y3; s2 < y3 - s2; s2++) {
 							if (getTile(x3, s2) == Tiles.get("rock")) {
-							sp.x = x3 * 16 - 24;
-							sp.y = s2 * 16 - 24;
+								sp.x = x3 * 16 - 24;
+								sp.y = s2 * 16 - 24;
 							}
 						}
 					}
-					
+
 					if (sp.x == 0 && sp.y == 0) {
-							sp.x = x3 * 16 - 8;
-							sp.y = y3 * 16 - 8;
+						sp.x = x3 * 16 - 8;
+						sp.y = y3 * 16 - 8;
 					}
 
 					if (getTile(sp.x / 16, sp.y / 16) == Tiles.get("rock")) {
@@ -253,50 +254,50 @@ public class Level {
 						Inventory inv = c.inventory;
 						int chance = -level;
 						inv.tryAdd(9/chance, new Tnt());
-				  		inv.tryAdd(10/chance, new Crafter(Crafter.Type.Anvil));
-				  		inv.tryAdd(7/chance, new Lantern(Lantern.Type.NORM));
-				  		inv.tryAdd(3/chance, Items.get("bread"), 2);
-				  		inv.tryAdd(4/chance, Items.get("bread"), 3);
-				  		inv.tryAdd(7/chance, Items.get("Leather Armor"), 1);
-				  		inv.tryAdd(50/chance, Items.get("Gold Apple"), 1);
-				  		inv.tryAdd(3/chance, Items.get("Lapis"), 2);
-				  		inv.tryAdd(4/chance, Items.get("glass"), 2);
-				  		inv.tryAdd(4/chance, Items.get("Gunpowder"), 3);
-				  		inv.tryAdd(4/chance, Items.get("Gunpowder"), 3);
-				  		inv.tryAdd(4/chance, Items.get("Torch"), 4);
-				  		inv.tryAdd(14/chance, Items.get("swim potion"), 1);
-				  		inv.tryAdd(16/chance, Items.get("haste potion"), 1);
-				  		inv.tryAdd(14/chance, Items.get("light potion"), 1);
-				  		inv.tryAdd(14/chance, Items.get("speed potion"), 1);
-				  		inv.tryAdd(16/chance, Items.get("Iron Armor"), 1);
-				  		inv.tryAdd(5/chance, Items.get("Stone Brick"), 4);
-				  		inv.tryAdd(5/chance, Items.get("Stone Brick"), 6);
-				  		inv.tryAdd(4/chance, Items.get("string"), 3);
-				  		inv.tryAdd(4/chance, Items.get("bone"), 2);
-				  		inv.tryAdd(3/chance, Items.get("bone"), 1);
-				  		inv.tryAdd(7/chance, ToolType.Claymore, 1);
-				  		inv.tryAdd(5/chance, Items.get("Torch"), 3);
-				  		inv.tryAdd(6/chance, Items.get("Torch"), 6);
+						inv.tryAdd(10/chance, new Crafter(Crafter.Type.Anvil));
+						inv.tryAdd(7/chance, new Lantern(Lantern.Type.NORM));
+						inv.tryAdd(3/chance, Items.get("bread"), 2);
+						inv.tryAdd(4/chance, Items.get("bread"), 3);
+						inv.tryAdd(7/chance, Items.get("Leather Armor"), 1);
+						inv.tryAdd(50/chance, Items.get("Gold Apple"), 1);
+						inv.tryAdd(3/chance, Items.get("Lapis"), 2);
+						inv.tryAdd(4/chance, Items.get("glass"), 2);
+						inv.tryAdd(4/chance, Items.get("Gunpowder"), 3);
+						inv.tryAdd(4/chance, Items.get("Gunpowder"), 3);
+						inv.tryAdd(4/chance, Items.get("Torch"), 4);
+						inv.tryAdd(14/chance, Items.get("swim potion"), 1);
+						inv.tryAdd(16/chance, Items.get("haste potion"), 1);
+						inv.tryAdd(14/chance, Items.get("light potion"), 1);
+						inv.tryAdd(14/chance, Items.get("speed potion"), 1);
+						inv.tryAdd(16/chance, Items.get("Iron Armor"), 1);
+						inv.tryAdd(5/chance, Items.get("Stone Brick"), 4);
+						inv.tryAdd(5/chance, Items.get("Stone Brick"), 6);
+						inv.tryAdd(4/chance, Items.get("string"), 3);
+						inv.tryAdd(4/chance, Items.get("bone"), 2);
+						inv.tryAdd(3/chance, Items.get("bone"), 1);
+						inv.tryAdd(7/chance, ToolType.Claymore, 1);
+						inv.tryAdd(5/chance, Items.get("Torch"), 3);
 						inv.tryAdd(6/chance, Items.get("Torch"), 6);
-				  		inv.tryAdd(7/chance, Items.get("steak"), 3);
-				  		inv.tryAdd(9/chance, Items.get("steak"), 4);
-				  		inv.tryAdd(7/chance, Items.get("gem"), 3);
-				  		inv.tryAdd(7/chance, Items.get("gem"), 5);
-				  		inv.tryAdd(7/chance, Items.get("gem"), 4);
-				  		inv.tryAdd(10/chance, Items.get("yellow clothes"), 1);
-				  		inv.tryAdd(10/chance, Items.get("black clothes"), 1);
-				  		inv.tryAdd(12/chance, Items.get("orange clothes"), 1);
-				  		inv.tryAdd(12/chance, Items.get("cyan clothes"), 1);
-				  		inv.tryAdd(12/chance, Items.get("purple clothes"), 1);
-				  		inv.tryAdd(4/chance, Items.get("arrow"), 5);
-						
+						inv.tryAdd(6/chance, Items.get("Torch"), 6);
+						inv.tryAdd(7/chance, Items.get("steak"), 3);
+						inv.tryAdd(9/chance, Items.get("steak"), 4);
+						inv.tryAdd(7/chance, Items.get("gem"), 3);
+						inv.tryAdd(7/chance, Items.get("gem"), 5);
+						inv.tryAdd(7/chance, Items.get("gem"), 4);
+						inv.tryAdd(10/chance, Items.get("yellow clothes"), 1);
+						inv.tryAdd(10/chance, Items.get("black clothes"), 1);
+						inv.tryAdd(12/chance, Items.get("orange clothes"), 1);
+						inv.tryAdd(12/chance, Items.get("cyan clothes"), 1);
+						inv.tryAdd(12/chance, Items.get("purple clothes"), 1);
+						inv.tryAdd(4/chance, Items.get("arrow"), 5);
+
 						if (inv.invSize() < 1) {
 							inv.add(Items.get("potion"), 1);
 							inv.add(Items.get("coal"), 3);
 							inv.add(Items.get("apple"), 3);
 							inv.add(Items.get("dirt"), 7);
-				  		}
-						
+						}
+
 						// chance = -level
 						add(c, sp.x - 16, sp.y - 16);
 					}
@@ -308,24 +309,24 @@ public class Level {
 			AirWizard aw = new AirWizard(false);
 			add(aw, w * 16 / 2, h * 16 / 2);
 		}
-		
+
 		if (Game.debug) printTileLocs(Tiles.get("Stairs Down"));
 	}
 
 	public void tick() {
 		int count = 0;
-		
+
 		while(entitiesToAdd.size() > 0) {
 			Entity entity = entitiesToAdd.get(0);
 			boolean inLevel = entities.contains(entity);
-			
+
 			if(!inLevel) {
 				if(Game.isValidServer())
 					Game.server.broadcastEntityAddition(entity);
-				
+
 				if (!Game.isValidServer() || !(entity instanceof Particle)) {
 					if (Game.debug) printEntityStatus("Adding ", entity, "DungeonChest", "AirWizard", "Player");
-					
+
 					entities.add(entity);
 					if(entity instanceof Player)
 						players.add((Player)entity);
@@ -333,10 +334,10 @@ public class Level {
 			}
 			entitiesToAdd.remove(entity);
 		}
-		
+
 		if(!Game.isValidServer() || getPlayers().length > 0) {
 			// this prevents any entity (or tile) tick action from happening on a server level with no players.
-			
+
 			if (!Game.isValidClient()) {
 				for (int i = 0; i < w * h / 50; i++) {
 					int xt = random.nextInt(w);
@@ -346,11 +347,11 @@ public class Level {
 						Game.server.broadcastTileUpdate(this, xt, yt);
 				}
 			}
-			
+
 			// entity loop
 			for (Entity e : getEntityArray()) {
 				if (e == null) continue;
-				
+
 				if (Game.hasConnectedClients() && e instanceof Player && !(e instanceof RemotePlayer)) {
 					if (Game.debug)
 						System.out.println("SERVER is removing regular player " + e + " from level " + this);
@@ -362,27 +363,27 @@ public class Level {
 						System.out.println("SERVER warning: found particle in entity list: " + e + ". Removing from level " + this);
 					e.remove();
 				}
-				
+
 				if (e.isRemoved()) continue;
-				
+
 				if(e != Game.player) // it is ticked seperately.
 					e.tick(); /// the main entity tick call.
-				
+
 				if (Game.hasConnectedClients()) // this means it's a server
 					Game.server.broadcastEntityUpdate(e);
-				
-				
+
+
 				if (Game.isValidServer() && e instanceof RemotePlayer && Game.server.getAssociatedThread((RemotePlayer) e) == null)
 					e.remove();
 				else if (e instanceof Mob) count++;
 			}
-			
-			
+
+
 			for (Entity e : getEntityArray())
 				if (e == null || e.isRemoved() || e.getLevel() != this)
 					remove(e);
 		}
-		
+
 		while(count > maxMobCount) {
 			Entity removeThis = entities.get(random.nextInt(entities.size()));
 			if(removeThis instanceof MobAi) {
@@ -390,34 +391,34 @@ public class Level {
 				count--;
 			}
 		}
-		
+
 		while(entitiesToRemove.size() > 0) {
 			Entity entity = entitiesToRemove.get(0);
-			
+
 			if(Game.isValidServer() && !(entity instanceof Particle) && entity.getLevel() == this)
 				Game.server.broadcastEntityRemoval(entity);
-			
+
 			if(Game.debug) printEntityStatus("Removing ", entity, "Player");
-			
+
 			entity.remove(this); // this will safely fail if the entity's level doesn't match this one.
 			entities.remove(entity);
-			
+
 			if(entity instanceof Player)
 				players.remove(entity);
 			entitiesToRemove.remove(entity);
 		}
-		
+
 		mobCount = count;
-		
+
 		if(Game.isValidServer() && players.size() == 0)
 			return; // don't try to spawn any mobs when there's no player on the level, on a server.
-		
+
 		//int spawnAttempts = 2;
 		//if(depth == 0) spawnAttempts = 18;
 		if(count < maxMobCount && !Game.isValidClient())
 			trySpawn();
 	}
-	
+
 	public void printEntityStatus(String entityMessage, Entity entity, String... searching) {
 		// "searching" can contain any number of class names I want to print when found.
 		String clazz = entity.getClass().getCanonicalName();
@@ -431,10 +432,12 @@ public class Level {
 				}
 			} catch(ClassNotFoundException ex) {
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			}
 		}
 	}
-	
+
 	public void dropItem(int x, int y, int mincount, int maxcount, Item... items) {
 		dropItem(x, y, mincount+random.nextInt(maxcount-mincount+1), items);
 	}
@@ -465,20 +468,30 @@ public class Level {
 		screen.setOffset(xScroll, yScroll);
 		for (int y = yo; y <= h + yo; y++) {
 			for (int x = xo; x <= w + xo; x++) {
-				getTile(x, y).render(screen, this, x, y);
+				if (!((Game.player.x >> 4)>xo && (Game.player.y >> 4)>yo)) {
+
+				}else {
+					getTile(x, y).render(screen, this, x, y);
+				}
+
+
 			}
 		}
 		screen.setOffset(0, 0);
 	}
-	
+
 	public void renderSprites(Screen screen, int xScroll, int yScroll) {
 		int xo = xScroll >> 4; // latches to the nearest tile coordinate
 		int yo = yScroll >> 4;
 		int w = (Screen.w + 15) >> 4;
 		int h = (Screen.h + 15) >> 4;
-		
+
 		screen.setOffset(xScroll, yScroll);
-		sortAndRender(screen, getEntitiesInTiles(xo, yo, xo + w, yo + h));
+		if (!((Game.player.x >> 4)>xo && (Game.player.y >> 4)>yo)) {
+
+		}else {
+			sortAndRender(screen, getEntitiesInTiles(xo, yo, xo + w, yo + h));
+		}
 		
 		screen.setOffset(0, 0);
 	}
@@ -491,17 +504,17 @@ public class Level {
 
 		screen.setOffset(xScroll, yScroll);
 		int r = 4;
-		
+
 		List<Entity> entities = getEntitiesInTiles(xo - r, yo - r, w + xo + r, h + yo + r);
 		for(Entity e: entities) {
 			int lr = e.getLightRadius();
 			if (lr > 0) screen.renderLight(e.x - 1, e.y - 4, lr * 8);
 		}
-		
+
 		for (int y = yo - r; y <= h + yo + r; y++) {
 			for (int x = xo - r; x <= w + xo + r; x++) {
 				if (x < 0 || y < 0 || x >= this.w || y >= this.h) continue;
-				
+
 				/*List<Entity> entities = entitiesInTiles[x + y * this.w];
 				for (int i = 0; i < entities.size(); i++) {
 					Entity e = entities.get(i);
@@ -514,7 +527,7 @@ public class Level {
 		}
 		screen.setOffset(0, 0);
 	}
-	
+
 	private void sortAndRender(Screen screen, List<Entity> list) {
 		list.sort(spriteSorter);
 		for (int i = 0; i < list.size(); i++) {
@@ -525,14 +538,14 @@ public class Level {
 				remove(e);
 		}
 	}
-	
+
 	public Tile getTile(int x, int y) {
 		if (x < 0 || y < 0 || x >= w || y >= h/* || (x + y * w) >= tiles.length*/) return Tiles.get("rock");
 		int id = tiles[x + y * w];
 		if(id < 0) id += 256;
 		return Tiles.get(id);
 	}
-	
+
 	public void setTile(int x, int y, String tilewithdata) {
 		if(!tilewithdata.contains("_")) {
 			setTile(x, y, Tiles.get(tilewithdata));
@@ -548,53 +561,53 @@ public class Level {
 	public void setTile(int x, int y, Tile t, int dataVal) {
 		if (x < 0 || y < 0 || x >= w || y >= h) return;
 		//if (Game.debug) printLevelLoc("setting tile from " + Tiles.get(tiles[x+y*w]).name + " to " + t.name, x, y);
-		
+
 		if(Game.isValidClient() && !Game.isValidServer()) {
 			System.out.println("Client requested a tile update for the " + t.name + " tile at " + x + "," + y);
 		} else {
 			tiles[x + y * w] = t.id;
 			data[x + y * w] = (byte) dataVal;
 		}
-		
+
 		if(Game.isValidServer()) {
 			Game.server.broadcastTileUpdate(this, x, y);
 		}
 	}
-	
+
 	public int getData(int x, int y) {
 		if (x < 0 || y < 0 || x >= w || y >= h) return 0;
 		return data[x + y * w] & 0xff;
 	}
-	
+
 	public void setData(int x, int y, int val) {
 		if (x < 0 || y < 0 || x >= w || y >= h) return;
 		data[x + y * w] = (byte) val;
 	}
-	
+
 	public void add(Entity e) { if(e==null) return; add(e, e.x, e.y); }
 	public void add(Entity entity, int x, int y) {
 		if(entity == null) return;
 		entity.setLevel(this, x, y);
-		
+
 		if(!entitiesToAdd.contains(entity)) // they are not even worth putting here. All they need to do is get sent to the the other clients.
 			entitiesToAdd.add(entity);
 		//if(entitiesToRemove.contains(entity))
 		entitiesToRemove.remove(entity); // to make sure the most recent request is satisfied.
 	}
-	
+
 	public void remove(Entity e) {
 		//e.remove();
-		
+
 		if(!entitiesToRemove.contains(e))
 			entitiesToRemove.add(e);
 		entitiesToAdd.remove(e);
 	}
-	
+
 	private void trySpawn() {
 		if(random.nextInt((5)) != 0) {
 			return; // hopefully will make mobs spawn a lot slower.
 		}
-		
+
 		boolean spawned = false;
 		for (int i = 0; i < 30 && !spawned; i++) {
 			int minLevel = 1, maxLevel = 1;
@@ -608,9 +621,9 @@ public class Level {
 			int lvl = random.nextInt(maxLevel - minLevel + 1) + minLevel;
 			int rnd = random.nextInt(100);
 			int nx = random.nextInt(w) * 16 + 8, ny = random.nextInt(h) * 16 + 8;
-			
+
 			//System.out.println("trySpawn on level " + depth + " of lvl " + lvl + " mob w/ rand " + rnd + " at tile " + nx + "," + ny);
-			
+
 			// spawns the enemy mobs; first part prevents enemy mob spawn on surface on first day, more or less.
 			if ((Game.getTime() == Game.Time.Night && Game.pastDay1 || depth != 0) && EnemyMob.checkStartPos(this, nx, ny)) { // if night or underground, with a valid tile, spawn an enemy mob.
 				if(depth != -4) { // normal mobs
@@ -618,35 +631,35 @@ public class Level {
 					else if (rnd <= 75) add((new Zombie(lvl)), nx, ny);
 					else if (rnd >= 85) add((new Skeleton(lvl)), nx, ny);
 					else add((new Creeper(lvl)), nx, ny);
-					
-					
+
+
 				} else { // special dungeon mobs
 					if (rnd <= 40) add((new Snake(lvl)), nx, ny);
 					else if (rnd <= 75) add((new Knight(lvl)), nx, ny);
 					else if (rnd >= 85) add((new Snake(lvl)), nx, ny);
 					else add((new Knight(lvl)), nx, ny);
 				}
-				
+
 				spawned = true;
 			}
-			
+
 			if(depth == 0 && PassiveMob.checkStartPos(this, nx, ny)) {
 				// spawns the friendly mobs.
 				if (rnd <= (Game.getTime()==Game.Time.Night?22:33)) add((new Cow()), nx, ny);
 				else if (rnd >= 68) add((new Pig()), nx, ny);
 				else add((new Sheep()), nx, ny);
-				
+
 				if (random.nextInt(10)==1) {
 					add(new GoldPig(), nx, ny);
 				}
-				
+
 				if (random.nextInt(5)==1) {
 					add(new Npc(), nx, ny);
 				}
-				
+
 				spawned = true;
 			}
-			
+
 		}
 	}
 
@@ -657,7 +670,7 @@ public class Level {
 					e.remove();
 		}
 	}
-	
+
 	public void clearEntities() {
 		if(!Game.ISONLINE)
 			entities.clear();
@@ -665,13 +678,13 @@ public class Level {
 			for(Entity e: getEntityArray())
 				e.remove();
 	}
-	
+
 	public synchronized Entity[] getEntityArray() {
 		//List<Entity> newList = new ArrayList<Entity>().addAll(entities);
 		//return newList;
 		return entities.toArray(new Entity[0]);
 	}
-	
+
 	/*private List<Entity> getEntitiesInTile(int xt, int yt) {
 		return getEntitiesInTiles(xt, yt, xt, yt);
 	}*/
@@ -679,14 +692,14 @@ public class Level {
 		List<Entity> contained = new ArrayList<>();
 		for(Entity e: getEntityArray()) {
 			int xt = e.x >> 4;
-			int yt = e.y >> 4;
-			if(xt >= xt0 && xt <= xt1 && yt >= yt0 && yt <= yt1)
-				contained.add(e);
+					int yt = e.y >> 4;
+		if(xt >= xt0 && xt <= xt1 && yt >= yt0 && yt <= yt1)
+			contained.add(e);
 		}
-		
+
 		return contained;
 	}
-	
+
 	public List<Entity> getEntitiesInRect(int x0, int y0, int x1, int y1) {
 		List<Entity> result = new ArrayList<>();
 		for(Entity e: getEntityArray()) {
@@ -695,7 +708,7 @@ public class Level {
 		}
 		return result;
 	}
-	
+
 	/// finds all entities that are an instance of the given entity.
 	public Entity[] getEntitiesOfClass(Class<? extends Entity> targetClass) {
 		ArrayList<Entity> matches = new ArrayList<>();
@@ -703,19 +716,19 @@ public class Level {
 			if(targetClass.isAssignableFrom(e.getClass()))
 				matches.add(e);
 		}
-		
+
 		return matches.toArray(new Entity[0]);
 	}
-	
+
 	public Player[] getPlayers() {
 		return players.toArray(new Player[players.size()]);
 	}
-	
+
 	public Player getClosestPlayer(int x, int y) {
 		Player[] players = getPlayers();
 		if(players.length == 0)
 			return null;
-		
+
 		Player closest = players[0];
 		int xd = closest.x - x;
 		int yd = closest.y - y;
@@ -728,10 +741,10 @@ public class Level {
 				yd = curyd;
 			}
 		}
-		
+
 		return closest;
 	}
-	
+
 	public Tile[] getAreaTiles(int x, int y, int r) { return getAreaTiles(x, y, r, r); }
 	public Tile[] getAreaTiles(int x, int y, int rx, int ry) {
 		ArrayList<Tile> local = new ArrayList<>();
@@ -739,10 +752,10 @@ public class Level {
 			for(int xo = x-rx; xo <= x+rx; xo++)
 				if(xo >= 0 && xo < w && yo >= 0 && yo < h)
 					local.add(getTile(xo, yo));
-		
+
 		return local.toArray(new Tile[0]);
 	}
-	
+
 	public void setAreaTiles(int xt, int yt, int r, Tile tile, int data) { setAreaTiles(xt, yt, r, tile, data, false); }
 	public void setAreaTiles(int xt, int yt, int r, Tile tile, int data, boolean overwriteStairs) {
 		for(int y = yt-r; y <= yt+r; y++) {
@@ -752,29 +765,29 @@ public class Level {
 			}
 		}
 	}
-	
+
 	public List<Point> getMatchingTiles(Tile search) {
 		List<Point> matches = new ArrayList<>();
 		for(int y = 0; y < h; y++)
 			for(int x = 0; x < w; x++)
 				if(getTile(x, y) == search)
 					matches.add(new Point(x, y));
-		
+
 		return matches;
 	}
-	
+
 	public boolean isLight(int x, int y) {
 		for(Tile t: getAreaTiles(x, y, 3))
 			if(t instanceof TorchTile)
 				return true;
-		
+
 		return false;
 	}
-	
+
 	private boolean noStairs(int x, int y) {
 		return getTile(x, y) != Tiles.get("Stairs Down");
 	}
-	
+
 	public String toString() {
 		return "Level(depth="+depth+")";
 	}

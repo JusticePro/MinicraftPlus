@@ -13,6 +13,7 @@ public class Settings {
 	static {
 		options.put("fps", new RangeEntry("Max FPS", 10, 300, 60));
 		options.put("diff", new ArrayEntry<>("Difficulty", "Easy", "Normal", "Hard"));
+		options.put("ui", new ArrayEntry<>("UI Style", "Default", "RPG"));
 		
 		options.get("diff").setSelection(1);
 		options.put("mode", new ArrayEntry<>("Game Mode", "Survival", "Creative", "Hardcore", "Score", "Speedrun"));
@@ -21,7 +22,7 @@ public class Settings {
 		options.put("sound", new BooleanEntry("Sound", true));
 		options.put("autosave", new BooleanEntry("Autosave", true));
 		
-		options.put("size", new ArrayEntry<>("World Size", 128, 256, 512, 1024));
+		options.put("size", new ArrayEntry<>("World Size", 128, 256, 512, 1024, 2048));
 		options.put("theme", new ArrayEntry<>("World Theme", "Normal", "Forest", "Desert", "Plain", "Hell"));
 		options.put("type", new ArrayEntry<>("Terrain Type", "Island", "Box", "Mountain", "Irregular"));
 		

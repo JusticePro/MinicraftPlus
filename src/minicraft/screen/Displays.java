@@ -2,6 +2,7 @@ package minicraft.screen;
 
 import java.io.IOException;
 
+import minicraft.exception.ErrorMenu;
 import minicraft.saveload.Load;
 
 public class Displays {
@@ -27,6 +28,8 @@ public class Displays {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			book = "";
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 		}
 		
 		return book;

@@ -13,6 +13,7 @@ public class OptionsMenu extends Display {
 				Settings.getEntry("fps"),
 				Settings.getEntry("sound"),
 				Settings.getEntry("autosave"),
+				Settings.getEntry("ui"),
 				Settings.getEntry("skinon"),
 				new SelectEntry("Change Key Bindings", () -> Game.setMenu(new KeyInputMenu()))
 			)

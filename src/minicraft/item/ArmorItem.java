@@ -1,6 +1,8 @@
 package minicraft.item;
 
 import java.util.ArrayList;
+
+import minicraft.Sound;
 import minicraft.entity.Player;
 import minicraft.gfx.Color;
 import minicraft.gfx.Sprite;
@@ -40,6 +42,7 @@ public class ArmorItem extends StackableItem {
 			player.curArmor = this; // set the current armor being worn to this.
 			player.armor = ((Double)(armor/10.0 * Player.maxArmor)).intValue(); // armor is how many hits are left
 			success = true;
+			Sound.powerup.play();
 		}
 		
 		return super.interactOn(success);

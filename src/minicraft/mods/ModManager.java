@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import minicraft.Game;
 import minicraft.entity.Entity;
+import minicraft.exception.ErrorMenu;
 import minicraft.item.Item;
 import minicraft.item.ToolItem;
 import minicraft.level.tile.Tile;
@@ -44,6 +45,8 @@ public class ModManager {
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					ErrorMenu frame = new ErrorMenu(e);
+					frame.setVisible(true);
 				}
 			}
 		}

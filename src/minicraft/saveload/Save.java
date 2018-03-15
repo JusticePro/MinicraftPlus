@@ -13,6 +13,7 @@ import minicraft.Settings;
 import minicraft.entity.*;
 import minicraft.entity.particle.Particle;
 import minicraft.entity.particle.TextParticle;
+import minicraft.exception.ErrorMenu;
 import minicraft.item.Item;
 import minicraft.item.PotionType;
 import minicraft.item.StackableItem;
@@ -110,6 +111,8 @@ public class Save {
 			writeToFile(filename, savedata.toArray(new String[0]), true);
 		} catch(IOException ex) {
 			ex.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 		}
 		
 		data.clear();

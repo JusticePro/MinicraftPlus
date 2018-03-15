@@ -1,9 +1,14 @@
 Minicraft+ version 2.1.2
-The Undeafening Update
 
 + Menu Music
++ Armor Sound
 
-+ Miniquest
++ UI Style Setting
+	- RPG
+
+Error Menu
+
++ 2048 World Size for Beefy Computers
 
 Minicraft+ version 2.1.1
 

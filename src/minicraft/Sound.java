@@ -1,6 +1,7 @@
 package minicraft;
 
 import javafx.scene.media.AudioClip;
+import minicraft.exception.ErrorMenu;
 
 public class Sound {
 	//creates sounds from their respective files
@@ -14,6 +15,7 @@ public class Sound {
 	public static final Sound craft = new Sound("/resources/sounds/craft.wav");
 	public static final Sound select = new Sound("/resources/sounds/select.wav");
 	public static final Sound confirm = new Sound("/resources/sounds/confirm.wav");
+	public static final Sound powerup = new Sound("/resources/sounds/powerup.wav");
 	
 	/*
 	 * Music
@@ -45,6 +47,8 @@ public class Sound {
 			clip.play();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(e);
+			frame.setVisible(true);
 		}
 	}
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import minicraft.Game;
 import minicraft.Settings;
 import minicraft.entity.*;
+import minicraft.exception.ErrorMenu;
 import minicraft.item.ArmorItem;
 import minicraft.item.Item;
 import minicraft.item.Items;
@@ -95,6 +96,8 @@ public class LegacyLoad {
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 		} finally {
 			try {
 				LoadingDisplay.progress(13);
@@ -111,6 +114,8 @@ public class LegacyLoad {
 				}
 			} catch (IOException ex) {
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			}
 			
 		}
@@ -140,6 +145,8 @@ public class LegacyLoad {
 			writer.close();
 		} catch(IOException ex) {
 			ex.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 		}
 	}
 	

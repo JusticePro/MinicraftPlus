@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import minicraft.Game;
+import minicraft.exception.ErrorMenu;
 import minicraft.gfx.Color;
 import minicraft.gfx.Screen;
 import minicraft.gfx.SpriteSheet;
@@ -55,6 +56,8 @@ public class TexturePackMenu extends Display {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(e);
+				frame.setVisible(true);
 			}
 			resetTexturePack();
 		}
@@ -66,6 +69,8 @@ public class TexturePackMenu extends Display {
 			JOptionPane.showMessageDialog(null, "A texture pack was removed while it was in use. Please restart to resolve this error.");
 			resetTexturePack();
 			e.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(e);
+			frame.setVisible(true);
 		}
 		return result;
 	}
@@ -78,6 +83,8 @@ public class TexturePackMenu extends Display {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(e);
+				frame.setVisible(true);
 			}
 		}
 		try {
@@ -88,6 +95,8 @@ public class TexturePackMenu extends Display {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(e);
+			frame.setVisible(true);
 		}
 	}
 	
@@ -99,6 +108,8 @@ public class TexturePackMenu extends Display {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(e);
+				frame.setVisible(true);
 			}
 		}
 		try {
@@ -109,6 +120,8 @@ public class TexturePackMenu extends Display {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(e);
+			frame.setVisible(true);
 		}
 	}
 	

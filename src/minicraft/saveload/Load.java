@@ -16,6 +16,7 @@ import minicraft.entity.*;
 import minicraft.entity.particle.FireParticle;
 import minicraft.entity.particle.SmashParticle;
 import minicraft.entity.particle.TextParticle;
+import minicraft.exception.ErrorMenu;
 import minicraft.item.ArmorItem;
 import minicraft.item.Item;
 import minicraft.item.Items;
@@ -119,6 +120,8 @@ public class Load {
 			} catch(IOException ex) {
 				System.err.println("could not create Unlocks"+extension+":");
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			}
 		}
 		
@@ -154,6 +157,8 @@ public class Load {
 				System.out.println("INVALID version number: \"" + version + "\"");
 			} catch(Exception ex) {
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			}
 		}
 		
@@ -207,6 +212,8 @@ public class Load {
 			data.addAll(Arrays.asList(total.split(",")));
 		} catch (IOException ex) {
 			ex.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 		}
 		
 		if(filename.contains("Level")) {
@@ -215,6 +222,8 @@ public class Load {
 				extradata.addAll(Arrays.asList(total.split(",")));
 			} catch (IOException ex) {
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			}
 		}
 		
@@ -248,6 +257,8 @@ public class Load {
 				
 			} catch (IOException ex) {
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			}
 		}*/
 		
@@ -420,6 +431,8 @@ public class Load {
 		} catch (IndexOutOfBoundsException ex) {
 			System.err.println("suspected: level id and data arrays do not have enough info for given world size.");
 			ex.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 		}
 		
 		level.tiles = tiles;
@@ -653,6 +666,8 @@ public class Load {
 			} catch(java.net.UnknownHostException ex) {
 				System.err.println("LOAD could not read ip address of remote player in file.");
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			}
 			//return null;
 		}
@@ -674,6 +689,8 @@ public class Load {
 					c = Class.forName("minicraft.entity."+entityName);
 				} catch(ClassNotFoundException ex) {
 					ex.printStackTrace();
+					ErrorMenu frame = new ErrorMenu(ex);
+					frame.setVisible(true);
 				}
 			}
 			if(c != null && EnemyMob.class.isAssignableFrom(c))

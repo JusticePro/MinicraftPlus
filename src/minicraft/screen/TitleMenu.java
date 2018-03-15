@@ -17,6 +17,7 @@ import minicraft.Game;
 import minicraft.InputHandler;
 import minicraft.Sound;
 import minicraft.entity.RemotePlayer;
+import minicraft.exception.ErrorMenu;
 import minicraft.gfx.Color;
 import minicraft.gfx.Font;
 import minicraft.gfx.Point;
@@ -62,7 +63,6 @@ public class TitleMenu extends Display {
 				new SelectEntry("Options", () -> Game.setMenu(new OptionsMenu())),
 				new SelectEntry("Mods", () -> openMods()),
 				new SelectEntry("Texture Packs", () -> Game.setMenu(new TexturePackMenu())),
-				new SelectEntry("Miniquest", null),
 				displayFactory("More", 
 						displayFactory("Help",
 								new SelectEntry("Instructions", () -> Game.setMenu(new BookDisplay(Displays.instructions))),
@@ -82,6 +82,8 @@ public class TitleMenu extends Display {
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
+								ErrorMenu frame = new ErrorMenu(e);
+								frame.setVisible(true);
 							}
 						} ),
 						new BlankEntry(),
@@ -91,6 +93,8 @@ public class TitleMenu extends Display {
 							} catch (IOException | URISyntaxException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
+								ErrorMenu frame = new ErrorMenu(e);
+								frame.setVisible(true);
 							}
 						})
 						

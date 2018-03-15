@@ -8,6 +8,7 @@ import java.io.IOException;
 import minicraft.Game;
 import minicraft.Settings;
 import minicraft.Sound;
+import minicraft.exception.ErrorMenu;
 import minicraft.gfx.Color;
 import minicraft.gfx.Font;
 import minicraft.gfx.MobSprite;
@@ -216,6 +217,8 @@ public class AirWizard extends EnemyMob {
 				bufferedWriter.write("AirSkin");
 			} catch (IOException ex) {
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			} finally {
 				try {
 					if(bufferedWriter != null) {
@@ -224,6 +227,8 @@ public class AirWizard extends EnemyMob {
 					}
 				} catch (IOException ex) {
 					ex.printStackTrace();
+					ErrorMenu frame = new ErrorMenu(ex);
+					frame.setVisible(true);
 				}
 			}
 		}

@@ -19,6 +19,7 @@ import minicraft.entity.Furniture;
 import minicraft.entity.ItemEntity;
 import minicraft.entity.Player;
 import minicraft.entity.RemotePlayer;
+import minicraft.exception.ErrorMenu;
 import minicraft.item.Item;
 import minicraft.item.Items;
 import minicraft.item.PotionItem;
@@ -53,6 +54,8 @@ public class MinicraftClient extends MinicraftConnection {
 			System.err.println("Don't know about host " + hostName);
 			menu.setError("host not found");
 			ex.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 			return null;
 		}
 		
@@ -62,6 +65,8 @@ public class MinicraftClient extends MinicraftConnection {
 			System.err.println("Problem connecting socket to server:");
 			menu.setError(ex.getMessage().replace(" (Connection refused)", ""));
 			ex.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 			return null;
 		}
 		
@@ -110,6 +115,8 @@ public class MinicraftClient extends MinicraftConnection {
 		} catch(UnknownHostException ex) {
 			System.err.println("CLIENT could not get localhost address:");
 			ex.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(ex);
+			frame.setVisible(true);
 			menu.setError("unable to get localhost address");
 		}
 		changeState(State.LOGIN);

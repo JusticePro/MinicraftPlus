@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import minicraft.Game;
 import minicraft.entity.Inventory;
+import minicraft.exception.ErrorMenu;
 import minicraft.item.Special.SpecialItems;
 import minicraft.mods.LoadedMod;
 
@@ -71,6 +72,8 @@ public class Items {
 				amount = Integer.parseInt(name.substring(name.indexOf("_")+1));
 			} catch(Exception ex) {
 				ex.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			}
 			name = name.substring(0, name.indexOf("_"));
 		}

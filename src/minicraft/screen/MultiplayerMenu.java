@@ -2,20 +2,23 @@ package minicraft.screen;
 
 import java.io.InputStream;
 
+import org.json.JSONObject;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.http.exceptions.UnirestException;
+
 import minicraft.Game;
 import minicraft.InputHandler;
+import minicraft.exception.ErrorMenu;
 import minicraft.gfx.Color;
 import minicraft.gfx.Font;
 import minicraft.gfx.FontStyle;
 import minicraft.gfx.Screen;
 import minicraft.network.MinicraftClient;
 import minicraft.saveload.Save;
-import org.json.JSONObject;
 
 public class MultiplayerMenu extends Display {
 	
@@ -90,6 +93,8 @@ public class MultiplayerMenu extends Display {
 			public void failed(UnirestException e) {
 				e.printStackTrace();
 				cancelled();
+				ErrorMenu frame = new ErrorMenu(e);
+				frame.setVisible(true);
 			}
 			
 			@Override
@@ -203,6 +208,8 @@ public class MultiplayerMenu extends Display {
 				public void failed(UnirestException e) {
 					e.printStackTrace();
 					cancelled();
+					ErrorMenu frame = new ErrorMenu(e);
+					frame.setVisible(true);
 				}
 				
 				@Override
@@ -222,6 +229,8 @@ public class MultiplayerMenu extends Display {
 				.asJson();
 		} catch (UnirestException e) {
 			e.printStackTrace();
+			ErrorMenu frame = new ErrorMenu(e);
+			frame.setVisible(true);
 		}
 		
 		if(response != null) {
