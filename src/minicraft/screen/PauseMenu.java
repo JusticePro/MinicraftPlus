@@ -40,7 +40,7 @@ public class PauseMenu extends Display {
 				
 				/* Stop all Songs */
 				Sound.dungeon.getClip().stop();
-				Sound.bitQuest.getClip().stop();
+				Sound.menu.getClip().stop();
 				
 				Game.setMenu(new TitleMenu());
 			}),

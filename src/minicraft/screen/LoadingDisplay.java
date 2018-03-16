@@ -1,5 +1,7 @@
 package minicraft.screen;
 
+import java.util.Random;
+
 import javax.swing.Timer;
 
 import minicraft.Game;
@@ -21,6 +23,8 @@ public class LoadingDisplay extends Display {
 			Game.initWorld();
 			Game.setMenu(null);
 			percentage = 0;
+			Random random = new Random();
+			Sound.musicCollection[random.nextInt(Sound.musicCollection.length)].play();
 		});
 		t.setRepeats(false);
 	}
@@ -29,7 +33,7 @@ public class LoadingDisplay extends Display {
 	public void init(Display parent) {
 		super.init(parent);
 		t.start();
-		Sound.bitQuest.getClip().stop();
+		Sound.menu.getClip().stop();
 	}
 	
 	@Override

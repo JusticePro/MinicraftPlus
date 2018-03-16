@@ -77,7 +77,7 @@ public class Game {
 	/// MANAGERIAL VARS AND RUNNING
 
 	public static final String NAME = "Minicraft Plus"; // This is the name on the application window
-	public static final String VERSION = "2.1.1";
+	public static final String VERSION = "2.1.2";
 	public static final int HEIGHT = 192;
 	public static final int WIDTH = 288;
 	private static float SCALE = 3;
@@ -413,7 +413,7 @@ public class Game {
 		for (LoadedMod mod : modManager.getModList()) {
 			mod.tick().run();
 		}
-
+		
 		if(newMenu != menu) {
 			if(menu != null)
 				menu.onExit();
@@ -530,7 +530,18 @@ public class Game {
 			} else {
 				//no menu, currently.
 				paused = false;
-
+				
+				boolean musicPlaying = false;
+				for (Sound sound : Sound.musicCollection) {
+					if (sound.getClip().isPlaying()) {
+						musicPlaying = true;
+					}
+				}
+				
+				if (!musicPlaying) {
+					Sound.musicCollection[random.nextInt(Sound.musicCollection.length)].play();
+				}
+				
 				if(!Game.isValidServer()) {
 					//if player is alive, but no level change, nothing happens here.
 					if (player.isRemoved() && readyToRenderGameplay && !Bed.inBed) {
@@ -1145,6 +1156,13 @@ public class Game {
 	}
 
 	public static void startMultiplayerServer() {
+		
+		for (Sound sound : Sound.musicCollection) {
+			if (sound.getClip().isPlaying()) {
+				sound.getClip().stop();
+			}
+		}
+		
 		if(Game.debug) System.out.println("starting multiplayer server...");
 
 		if(HAS_GUI) {

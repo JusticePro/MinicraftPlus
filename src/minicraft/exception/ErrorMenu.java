@@ -54,8 +54,25 @@ public class ErrorMenu extends JFrame {
 		StringWriter stackTraceWriter = new StringWriter();
 		throwable.printStackTrace(new PrintWriter(stackTraceWriter));
 		textArea.setText("// I blame you\n\n" + "Exception Description, \"" + throwable.toString() + ", (" + throwable.getMessage() + ")\"\n\n" + stackTraceWriter.toString());
+		
+		JButton btnAbort = new JButton("Abort");
+		btnAbort.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		btnAbort.setBounds(139, 533, 98, 26);
+		contentPane.add(btnAbort);
+		
+		JButton btnContinue = new JButton("Continue");
+		btnContinue.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+			}
+		});
+		btnContinue.setBounds(249, 533, 98, 26);
+		contentPane.add(btnContinue);
 
 
 	}
-
 }

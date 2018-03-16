@@ -155,6 +155,8 @@ public class Load {
 				}
 			} catch(NumberFormatException ex) {
 				System.out.println("INVALID version number: \"" + version + "\"");
+				ErrorMenu frame = new ErrorMenu(ex);
+				frame.setVisible(true);
 			} catch(Exception ex) {
 				ex.printStackTrace();
 				ErrorMenu frame = new ErrorMenu(ex);

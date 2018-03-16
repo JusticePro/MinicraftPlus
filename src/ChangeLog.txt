@@ -6,9 +6,11 @@ Minicraft+ version 2.1.2
 + UI Style Setting
 	- RPG
 
-Error Menu
++ Error Menu
 
 + 2048 World Size for Beefy Computers
+
++ "C to make the screen more clean"
 
 Minicraft+ version 2.1.1
 

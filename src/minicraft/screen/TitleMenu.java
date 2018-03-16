@@ -33,6 +33,8 @@ public class TitleMenu extends Display {
 	private int rand;
 	private int count = 0; // this and reverse are for the logo; they produce the fade-in/out effect.
 	private boolean reverse = false;
+	
+	private boolean clean = false;
 
 	public TitleMenu() {
 		super(true, false);
@@ -50,7 +52,7 @@ public class TitleMenu extends Display {
 		else
 			entries.add(new SelectEntry("Play", () -> Game.setMenu(new WorldGenMenu())));
 		entries.addAll(Arrays.asList(
-//				new SelectEntry("Join Online World", () -> Game.setMenu(new MultiplayerMenu())),
+				new SelectEntry("Join Online World", () -> Game.setMenu(new MultiplayerMenu())),
 				new SelectEntry("Multiplayer", () -> {
 					
 					Menu meh = new Menu.Builder(true, 5, RelPos.CENTER,
@@ -106,8 +108,8 @@ public class TitleMenu extends Display {
 
 		menus = new Menu[] {menu.createMenu()};
 		
-		if (!Sound.bitQuest.getClip().isPlaying()) {
-			Sound.bitQuest.play();
+		if (!Sound.menu.getClip().isPlaying()) {
+			Sound.menu.play();
 		}
 	}
 
@@ -124,6 +126,13 @@ public class TitleMenu extends Display {
 	@Override
 	public void init(Display parent) {
 		super.init(parent);
+		
+		for (Sound sound : Sound.musicCollection) {
+			if (sound.getClip().isPlaying()) {
+				sound.getClip().stop();
+			}
+		}
+		
 		Game.readyToRenderGameplay = false;
 		/// this is just in case; though, i do take advantage of it in other places.
 		if(Game.server != null) {
@@ -158,6 +167,7 @@ public class TitleMenu extends Display {
 	@Override
 	public void tick(InputHandler input) {
 		if (input.getKey("r").clicked) rand = random.nextInt(splashes.length);
+		if (input.getKey("c").clicked) clean = !clean;
 
 		if (!reverse) {
 			count++;
@@ -209,12 +219,16 @@ public class TitleMenu extends Display {
 
 			Font.drawCentered(greeting, screen, 10, Color.get(-1, 330));
 		}*/
+		
+		if (!clean) {
+			Font.draw("Version " + Game.VERSION, screen, 1, 1, Color.get(-1, 111));
 
-		Font.draw("Version " + Game.VERSION, screen, 1, 1, Color.get(-1, 111));
-
-		Font.drawCentered("("+Game.input.getMapping("up")+", "+Game.input.getMapping("down")+" to select)", screen, Screen.h - 32, Color.get(-1, 111));
-		Font.drawCentered("("+Game.input.getMapping("select")+" to accept)", screen, Screen.h - 22, Color.get(-1, 111));
-		Font.drawCentered("("+Game.input.getMapping("exit")+" to return)", screen, Screen.h - 12, Color.get(-1, 111));
+			Font.drawCentered("("+Game.input.getMapping("up")+", "+Game.input.getMapping("down")+" to select)", screen, Screen.h - 32, Color.get(-1, 111));
+			Font.drawCentered("("+Game.input.getMapping("select")+" to accept)", screen, Screen.h - 22, Color.get(-1, 111));
+			Font.drawCentered("("+Game.input.getMapping("exit")+" to return)", screen, Screen.h - 12, Color.get(-1, 111));
+			Font.drawCentered("C to make the screen more clean", screen, Screen.h - 42, Color.get(-1, 111));
+		}
+		
 	}
 
 	private boolean notchBirthday() {
@@ -227,7 +241,8 @@ public class TitleMenu extends Display {
 
 	private static final String[] splashes = {//new ArrayList<String>();
 			"Now with Mods!",
-
+			"Now with Music!",
+			
 			"Multiplayer Now Included!",
 			"Also play InfinityTale!",
 			"Also play Minicraft Deluxe!",
@@ -240,8 +255,8 @@ public class TitleMenu extends Display {
 			"Playminicraft.com is the bomb!",
 			"@MinicraftPlus on Twitter",
 			"MinicraftPlus on Youtube",
-			//"Join the Forums!",
-			//"The Wiki is weak! Help it!",
+			"Join the Forums!",
+			"The Wiki is weak! Help it!",
 			"Notch is Awesome!",
 			"Dillyg10 is cool as Ice!",
 			"Shylor is the man!",
@@ -308,7 +323,7 @@ public class TitleMenu extends Display {
 			"Sonic Boom!",
 			"Hakuna Matata!",
 			"One truth prevails!",
-			//"1.8? Ehhhh....",
+			"1.8? Ehhhh....",
 			"011011000110111101101100!",
 			"001100010011000000110001!",
 			"011010000110110101101101?",
@@ -329,13 +344,13 @@ public class TitleMenu extends Display {
 			"Sand + Gunpowder = TNT!",
 			"Sleep at Night!",
 			"Farm at Day!",
-			//"Leave a comment below!",
+			"Leave a comment below!",
 			"Explanation Mark!",
 			"!sdrawkcab si sihT",
 			"This is forwards!",
 			"Why is this blue?",
 			"Green is a nice color!",
-			"Red is my favorite color!"
-			//"try with --debug",
+			"Red is my favorite color!",
+			"try with --debug"
 	};
 }

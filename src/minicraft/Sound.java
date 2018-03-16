@@ -15,6 +15,7 @@ public class Sound {
 	public static final Sound craft = new Sound("/resources/sounds/craft.wav");
 	public static final Sound select = new Sound("/resources/sounds/select.wav");
 	public static final Sound confirm = new Sound("/resources/sounds/confirm.wav");
+	
 	public static final Sound powerup = new Sound("/resources/sounds/powerup.wav");
 	
 	/*
@@ -22,11 +23,37 @@ public class Sound {
 	 */
 	public static final Sound bitQuest = new Sound("/resources/sounds/songs/Bit Quest.mp3");
 	public static final Sound dungeon = new Sound("/resources/sounds/songs/8bit Dungeon Level.mp3");
+	public static final Sound miniTune = new Sound("/resources/sounds/songs/Mini Tune.wav");
+	
+	public static final Sound forestBETA = new Sound("/resources/sounds/songs/forest island BETA.wav");
+	
+	public static final Sound skyIslandAlpha = new Sound("/resources/sounds/songs/sky island Alpha.wav");
+	public static final Sound skyIslandPrealpha = new Sound("/resources/sounds/songs/sky island Pre-alpha.wav");
+	
+	public static final Sound desertIslandAlpha = new Sound("/resources/sounds/songs/Desert island Alpha.wav");
+	public static final Sound desertIslandPreAlpha = new Sound("/resources/sounds/songs/Desert island Pre-Alpha.wav");
+	
+	public static final Sound iceyIslandAlpha = new Sound("/resources/sounds/songs/icey island Alpha.wav");
+	public static final Sound iceyIslandPreAlpha = new Sound("/resources/sounds/songs/icey island Pre-Alpha.wav");
+	
+	public static final Sound[] musicCollection = new Sound[] {
+		skyIslandAlpha, skyIslandPrealpha,
+		forestBETA,
+		desertIslandAlpha, desertIslandPreAlpha,
+		iceyIslandAlpha, iceyIslandPreAlpha
+	};
+	
+	public static final Sound menu = new Sound("/resources/sounds/songs/Mini Tune.wav");
 	
 	private AudioClip clip; // Creates a audio clip to be played
 	
 	private Sound(String name) {
-		clip = new AudioClip(Sound.class.getResource(name).toString());
+		try {
+			clip = new AudioClip(Sound.class.getResource(name).toString());
+		}catch (Exception e) {
+			ErrorMenu frame = new ErrorMenu(e);
+			frame.setVisible(true);
+		}
 	}
 	
 	public AudioClip getClip() {
