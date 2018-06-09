@@ -21,8 +21,6 @@ public class Sound {
 	/*
 	 * Music
 	 */
-	public static final Sound bitQuest = new Sound("/resources/sounds/songs/Bit Quest.mp3");
-	public static final Sound dungeon = new Sound("/resources/sounds/songs/8bit Dungeon Level.mp3");
 	public static final Sound miniTune = new Sound("/resources/sounds/songs/Mini Tune.wav");
 	
 	public static final Sound forestBETA = new Sound("/resources/sounds/songs/forest island BETA.wav");

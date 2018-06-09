@@ -77,7 +77,7 @@ public class Game {
 	/// MANAGERIAL VARS AND RUNNING
 
 	public static final String NAME = "Minicraft Plus"; // This is the name on the application window
-	public static final String VERSION = "2.1.2";
+	public static final String VERSION = "2.1.2.1";
 	public static final int HEIGHT = 192;
 	public static final int WIDTH = 288;
 	private static float SCALE = 3;
@@ -196,6 +196,8 @@ public class Game {
 
 	public static boolean pastDay1 = true; // used to prefent mob spawn on surface on day 1.
 	public static boolean readyToRenderGameplay = false;
+
+	public static JFrame frame;
 
 	public enum Time {
 		Morning (0),
@@ -413,7 +415,7 @@ public class Game {
 		for (LoadedMod mod : modManager.getModList()) {
 			mod.tick().run();
 		}
-		
+
 		if(newMenu != menu) {
 			if(menu != null)
 				menu.onExit();
@@ -530,18 +532,18 @@ public class Game {
 			} else {
 				//no menu, currently.
 				paused = false;
-				
+
 				boolean musicPlaying = false;
 				for (Sound sound : Sound.musicCollection) {
 					if (sound.getClip().isPlaying()) {
 						musicPlaying = true;
 					}
 				}
-				
+
 				if (!musicPlaying) {
 					Sound.musicCollection[random.nextInt(Sound.musicCollection.length)].play();
 				}
-				
+
 				if(!Game.isValidServer()) {
 					//if player is alive, but no level change, nothing happens here.
 					if (player.isRemoved() && readyToRenderGameplay && !Bed.inBed) {
@@ -1156,13 +1158,13 @@ public class Game {
 	}
 
 	public static void startMultiplayerServer() {
-		
+
 		for (Sound sound : Sound.musicCollection) {
 			if (sound.getClip().isPlaying()) {
 				sound.getClip().stop();
 			}
 		}
-		
+
 		if(Game.debug) System.out.println("starting multiplayer server...");
 
 		if(HAS_GUI) {
@@ -1279,29 +1281,29 @@ public class Game {
 
 	/// * The main method! * ///
 	public static void main(String[] args) {
-
-		File texturepackdir = new File(Game.textureDir);
-
-		if (!texturepackdir.exists()) {
-			texturepackdir.mkdirs();
-		}
-
-		File moddir = new File(modsDir);
-
-		if (!moddir.exists()) {
-			moddir.mkdirs();
-		}
-
 		try {
-			modManager.loadMods();
-		} catch (MalformedURLException | ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			ErrorMenu frame = new ErrorMenu(e1);
-			frame.setVisible(true);
-		}
+			File texturepackdir = new File(Game.textureDir);
 
-		/*Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+			if (!texturepackdir.exists()) {
+				texturepackdir.mkdirs();
+			}
+
+			File moddir = new File(modsDir);
+
+			if (!moddir.exists()) {
+				moddir.mkdirs();
+			}
+
+			try {
+				modManager.loadMods();
+			} catch (MalformedURLException | ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				ErrorMenu frame = new ErrorMenu(e1);
+				frame.setVisible(true);
+			}
+
+			/*Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			public void uncaughtException(Thread t, Throwable e) {
 				String exceptionTrace = "Exception in thread " + t + ":P\n";
 				exceptionTrace += Game.getExceptionTrace(e);
@@ -1311,152 +1313,156 @@ public class Game {
 		});*/
 
 
-		boolean debug = false;
-		boolean autoclient = false;
-		boolean autoserver = false;
+			boolean debug = false;
+			boolean autoclient = false;
+			boolean autoserver = false;
 
-		String saveDir = Game.systemGameDir;
-		for(int i = 0; i < args.length; i++) {
-			if(args[i].equals("--debug"))
-				debug = true;
-			if(args[i].equals("--savedir") && i+1 < args.length) {
-				i++;
-				saveDir = args[i];
-			}
-			if(args[i].equals("--localclient"))
-				autoclient = true;
-			if(args[i].equals("--server")) {
-				autoserver = true;
-				if(i+1 < args.length) {
+			String saveDir = Game.systemGameDir;
+			for(int i = 0; i < args.length; i++) {
+				if(args[i].equals("--debug"))
+					debug = true;
+				if(args[i].equals("--savedir") && i+1 < args.length) {
 					i++;
-					WorldSelectMenu.setWorldName(args[i]);
+					saveDir = args[i];
 				}
+				if(args[i].equals("--localclient"))
+					autoclient = true;
+				if(args[i].equals("--server")) {
+					autoserver = true;
+					if(i+1 < args.length) {
+						i++;
+						WorldSelectMenu.setWorldName(args[i]);
+					}
+				}
+
 			}
+			Game.debug = debug;
+			HAS_GUI = !autoserver;
 
-		}
-		Game.debug = debug;
-		HAS_GUI = !autoserver;
-
-		//if(HAS_GUI) {
-		/*SplashScreen splash = SplashScreen.getSplashScreen();
+			//if(HAS_GUI) {
+			/*SplashScreen splash = SplashScreen.getSplashScreen();
 			if (splash != null) {
 				// TODO maybe in the future, I can make it so that the window is not displayed until the title menu is first rendered?
 			}*/
-		//}
+			//}
 
-		Game.gameDir = saveDir + Game.localGameDir;
-		if(Game.debug) System.out.println("determined gameDir: " + Game.gameDir);
+			Game.gameDir = saveDir + Game.localGameDir;
+			if(Game.debug) System.out.println("determined gameDir: " + Game.gameDir);
 
-		String prevLocalGameDir = "/.playminicraft/mods/Minicraft Plus";
-		File testFile = new File(systemGameDir + localGameDir);
-		File testFileOld = new File(systemGameDir + prevLocalGameDir);
-		if(!testFile.exists() && testFileOld.exists()) {
-			// rename the old folders to the new scheme
-			testFile.mkdirs();
-			if(OS.contains("windows")) {
+			String prevLocalGameDir = "/.playminicraft/mods/Minicraft Plus";
+			File testFile = new File(systemGameDir + localGameDir);
+			File testFileOld = new File(systemGameDir + prevLocalGameDir);
+			if(!testFile.exists() && testFileOld.exists()) {
+				// rename the old folders to the new scheme
+				testFile.mkdirs();
+				if(OS.contains("windows")) {
+					try {
+						java.nio.file.Files.setAttribute(testFile.toPath(), "dos:hidden", true);
+					} catch (java.io.IOException ex) {
+						System.err.println("couldn't make game folder hidden on windows:");
+						ex.printStackTrace();
+						ErrorMenu frame = new ErrorMenu(ex);
+						frame.setVisible(true);
+					}
+				}
+
+				File[] files = getAllFiles(testFileOld).toArray(new File[0]);
+				for(File file: files) {
+					//testFile
+					File newFile = new File(file.getPath().replace(testFileOld.getPath(), testFile.getPath()));
+					//System.out.println("new file: " + newFile.getPath());
+					if(file.isDirectory()) newFile.mkdirs(); // these should be unnecessary.
+					else file.renameTo(newFile);
+					//File main = new File(testFileOld.getPath()+"/Preferences.miniplussave");
+				}
+
+				deleteAllFiles(testFileOld);
+
+				testFile = new File(systemGameDir + ".playminicraft");
+				if(OS.contains("windows") && testFile.exists())
+					deleteAllFiles(testFile);
+			}
+
+			if(HAS_GUI) {
+				canvas.setMinimumSize(new java.awt.Dimension(1, 1));
+				canvas.setPreferredSize(getWindowSize());
+				frame = new JFrame(Game.NAME);
+				frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+				frame.setLayout(new BorderLayout()); // sets the layout of the window
+				frame.add(canvas, BorderLayout.CENTER); // Adds the game (which is a canvas) to the center of the screen.
+				frame.pack(); //squishes everything into the preferredSize.
+
 				try {
-					java.nio.file.Files.setAttribute(testFile.toPath(), "dos:hidden", true);
-				} catch (java.io.IOException ex) {
-					System.err.println("couldn't make game folder hidden on windows:");
-					ex.printStackTrace();
-					ErrorMenu frame = new ErrorMenu(ex);
-					frame.setVisible(true);
+					BufferedImage logo = ImageIO.read(Game.class.getResourceAsStream("/resources/logo.png"));
+					frame.setIconImage(logo);
+				} catch (IOException e) {
+					e.printStackTrace();
+					ErrorMenu eframe = new ErrorMenu(e);
+					eframe.setVisible(true);
 				}
-			}
 
-			File[] files = getAllFiles(testFileOld).toArray(new File[0]);
-			for(File file: files) {
-				//testFile
-				File newFile = new File(file.getPath().replace(testFileOld.getPath(), testFile.getPath()));
-				//System.out.println("new file: " + newFile.getPath());
-				if(file.isDirectory()) newFile.mkdirs(); // these should be unnecessary.
-				else file.renameTo(newFile);
-				//File main = new File(testFileOld.getPath()+"/Preferences.miniplussave");
-			}
+				frame.setLocationRelativeTo(null); // the window will pop up in the middle of the screen when launched.
 
-			deleteAllFiles(testFileOld);
+				frame.addComponentListener(new ComponentAdapter() {
+					public void componentResized(ComponentEvent e) {
+						float w = frame.getWidth() - frame.getInsets().left - frame.getInsets().right;
+						float h = frame.getHeight() - frame.getInsets().top - frame.getInsets().bottom;
+						Game.SCALE = Math.min(w / Game.WIDTH, h / Game.HEIGHT);
+					}
+				});
 
-			testFile = new File(systemGameDir + ".playminicraft");
-			if(OS.contains("windows") && testFile.exists())
-				deleteAllFiles(testFile);
-		}
+				frame.addWindowListener(new WindowListener() {
+					public void windowActivated(WindowEvent e) {}
+					public void windowDeactivated(WindowEvent e) {}
+					public void windowIconified(WindowEvent e) {}
+					public void windowDeiconified(WindowEvent e) {}
+					public void windowOpened(WindowEvent e) {}
+					public void windowClosed(WindowEvent e) {System.out.println("window closed");}
+					public void windowClosing(WindowEvent e) {
+						System.out.println("window closing");
+						if(Game.isConnectedClient())
+							Game.client.endConnection();
+						if(Game.isValidServer())
+							Game.server.endConnection();
 
-		if(HAS_GUI) {
-			canvas.setMinimumSize(new java.awt.Dimension(1, 1));
-			canvas.setPreferredSize(getWindowSize());
-			JFrame frame = new JFrame(Game.NAME);
-			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-			frame.setLayout(new BorderLayout()); // sets the layout of the window
-			frame.add(canvas, BorderLayout.CENTER); // Adds the game (which is a canvas) to the center of the screen.
-			frame.pack(); //squishes everything into the preferredSize.
+						Game.quit();
+					}
+				});
 
-			try {
-				BufferedImage logo = ImageIO.read(Game.class.getResourceAsStream("/resources/logo.png"));
-				frame.setIconImage(logo);
-			} catch (IOException e) {
-				e.printStackTrace();
-				ErrorMenu eframe = new ErrorMenu(e);
-				eframe.setVisible(true);
-			}
+				frame.setVisible(true);
 
-			frame.setLocationRelativeTo(null); // the window will pop up in the middle of the screen when launched.
+				// d
 
-			frame.addComponentListener(new ComponentAdapter() {
-				public void componentResized(ComponentEvent e) {
-					float w = frame.getWidth() - frame.getInsets().left - frame.getInsets().right;
-					float h = frame.getHeight() - frame.getInsets().top - frame.getInsets().bottom;
-					Game.SCALE = Math.min(w / Game.WIDTH, h / Game.HEIGHT);
-				}
-			});
-
-			frame.addWindowListener(new WindowListener() {
-				public void windowActivated(WindowEvent e) {}
-				public void windowDeactivated(WindowEvent e) {}
-				public void windowIconified(WindowEvent e) {}
-				public void windowDeiconified(WindowEvent e) {}
-				public void windowOpened(WindowEvent e) {}
-				public void windowClosed(WindowEvent e) {System.out.println("window closed");}
-				public void windowClosing(WindowEvent e) {
-					System.out.println("window closing");
-					if(Game.isConnectedClient())
-						Game.client.endConnection();
-					if(Game.isValidServer())
-						Game.server.endConnection();
-
-					Game.quit();
-				}
-			});
-
-			frame.setVisible(true);
-
-			// d
-
-			/*canvas.createBufferStrategy(3);
+				/*canvas.createBufferStrategy(3);
 			BufferStrategy bs = canvas.getBufferStrategy();
 			Graphics g = bs.getDrawGraphics();
 			g.drawString("Loading menus...", Game.WIDTH/4, Game.HEIGHT/2);
 			g.dispose();
 			bs.show();*/
+			}
+
+			Game.autoclient = autoclient; // this will make the game automatically jump to the MultiplayerMenu, and attempt to connect to localhost.
+
+			input = new InputHandler();
+
+			fra = 0; // the frames processed in the previous second
+			tik = 0; // the ticks processed in the previous second
+
+			//colors = new int[256];
+			image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+			pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+			asTick = 0;
+			notetick = 0;
+
+			showinfo = false;
+			gameOver = false;
+
+			run(); // Starts the game!
+		} catch (Exception e) {
+			ErrorMenu frame = new ErrorMenu(e);
+			frame.setVisible(true);
 		}
-
-		Game.autoclient = autoclient; // this will make the game automatically jump to the MultiplayerMenu, and attempt to connect to localhost.
-
-		input = new InputHandler();
-
-		fra = 0; // the frames processed in the previous second
-		tik = 0; // the ticks processed in the previous second
-
-		//colors = new int[256];
-		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-
-		asTick = 0;
-		notetick = 0;
-
-		showinfo = false;
-		gameOver = false;
-
-		run(); // Starts the game!
 	}
 
 	public static Canvas getCanvas() { return canvas; }

@@ -39,7 +39,6 @@ public class PauseMenu extends Display {
 			new SelectEntry("Main Menu", () -> {
 				
 				/* Stop all Songs */
-				Sound.dungeon.getClip().stop();
 				Sound.menu.getClip().stop();
 				
 				Game.setMenu(new TitleMenu());

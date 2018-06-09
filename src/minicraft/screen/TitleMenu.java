@@ -52,7 +52,6 @@ public class TitleMenu extends Display {
 		else
 			entries.add(new SelectEntry("Play", () -> Game.setMenu(new WorldGenMenu())));
 		entries.addAll(Arrays.asList(
-				new SelectEntry("Join Online World", () -> Game.setMenu(new MultiplayerMenu())),
 				new SelectEntry("Multiplayer", () -> {
 					
 					Menu meh = new Menu.Builder(true, 5, RelPos.CENTER,

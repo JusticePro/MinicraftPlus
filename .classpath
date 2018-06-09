@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/junit-4.11.jar"/>
 	<classpathentry kind="lib" path="lib/unirest-java-1.4.9.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/NetworkAPI.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
