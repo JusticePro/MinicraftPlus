@@ -10,7 +10,7 @@ Minicraft+ version 2.1.2
 
 + 2048 World Size for Beefy Computers
 
-+ "C to make the screen more clean"
++ "C to make the title screen more clean"
 
 Minicraft+ version 2.1.1
 
